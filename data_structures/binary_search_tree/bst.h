@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct bst BST;
@@ -5,6 +6,8 @@ typedef struct bst BST;
 BST *BST_create(int);
 void BST_add(BST *, int);
 BST *BST_search(BST *, int);
+void BST_print(BST *);
+void BST_print_recur(BST *, int);
 void BST_destroy(BST *);
 
 struct bst {
@@ -55,4 +58,19 @@ void BST_destroy(BST *tree)
 	BST_destroy(tree->right);
 	BST_destroy(tree->left);
 	free(tree);
+}
+
+// Prints tree, with root node farthest to the left
+void BST_print(BST *tree)
+{
+	BST_print_recur(tree, 4);
+}
+
+void BST_print_recur(BST *tree, int space)
+{
+	if (!tree) return;
+
+	BST_print_recur(tree->right, space + 4);
+	printf("%*d\n", space, tree->val);
+	BST_print_recur(tree->left, space + 4);
 }
