@@ -1,9 +1,11 @@
 #include <stdio.h>
+#include <string.h>
 
 typedef int (*comp_cb)(void *, void *);
 void mergesort(void **, int, int, comp_cb);
 void merge(void **, int, int, comp_cb);
 int num_asc(int *, int *);
+int str_asc(char *, char *);
 void swap(void **, int, int);
 
 void mergesort(void **arr, int start, int end, comp_cb cmp)
@@ -56,6 +58,11 @@ int num_asc(int *a, int *b)
 	return *a - *b;
 }
 
+int str_asc(char *a, char *b)
+{
+	return strcmp(a, b);
+}
+
 int main(int argc, char *argv[])
 {
 	int nums[] = {10, 3, 8, 5, 9, 12, 4, 1};
@@ -78,5 +85,12 @@ int main(int argc, char *argv[])
 	}
 	printf("\n");
 
+	if (argc > 1) {
+		for (int i = 1; i < argc; i++) printf("%s", argv[i]);
+		printf("\n");
+		mergesort((void**)argv, 1, argc, (int(*)(void*, void*))(str_asc));
+		for (int i = 1; i < argc; i++) printf("%s", argv[i]);
+		printf("\n");
+	}
 	return 0;
 }
