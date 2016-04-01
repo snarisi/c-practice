@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include "wordtree.h"
+#include "wordtable.h"
 
 #define MAX_WORD 100
 
@@ -41,8 +41,8 @@ int main(int argc, char **argv)
 
 	FILE *file;
 	char *word, *path;
-	WordTree *words,  **words_sorted;
-	int size, limit;
+	WordTable *wordtable;
+	int limit;
 
 	for (int i = 1; i < argc; i++) {
 		if (argv[i][0] == '-') {
@@ -62,26 +62,16 @@ int main(int argc, char **argv)
 
 	file = fopen(path, "r");
 
+	wordtable = WordTable_create(48);
 	while ((word = getword(file))) {
-		if (!words) {
-			words = WordTree_create(word);
-		} else {
-			WordTree_add(words, word);
-		}
+		WordTable_add(wordtable, word);
 	}
 
-	words_sorted = WordTree_sort(words);
-	size = WordTree_size(words);
-	if (limit > size) {
-		limit = size;
+	if (limit > wordtable->numwords) {
+		limit = wordtable->numwords;
 	}
 
-	for (int i = 0; i < limit; i++) {
-		printf("%s: %d\n", words_sorted[i]->word, words_sorted[i]->count);
-	}
-	
-//	WordTree_print(words);
-	fclose(file);
+	WordTable_print_sorted(wordtable, limit);
 
 	return 0;
 }
