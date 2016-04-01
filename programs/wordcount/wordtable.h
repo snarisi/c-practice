@@ -8,10 +8,12 @@ typedef struct table WordTable;
 
 WordTable *WordTable_create(int);
 void WordTable_add(WordTable *, char *);
-static WordNode *WordNode_create(char *);
-static WordNode **WordTable_sort(WordTable *);
 void WordTable_print(WordTable *);
 void WordTable_print_sorted(WordTable *, int);
+void WordTable_destroy(WordTable *);
+static void WordTable_freebucket(WordNode *);
+static WordNode *WordNode_create(char *);
+static WordNode **WordTable_sort(WordTable *);
 static int wordcomp(WordNode *, WordNode *);
 static int hash(char *, int);
 
@@ -51,6 +53,7 @@ void WordTable_add(WordTable *table, char *word)
 		while (currentnode) {
 			if (strcmp(currentnode->word, word) == 0) {
 				currentnode->count++;
+				free(word);
 				return;
 			} else if (!currentnode->next) {
 				currentnode->next = WordNode_create(word);
@@ -113,6 +116,26 @@ void WordTable_print_sorted(WordTable *table, int lim)
 		printf("%s: %d\n", arr[i]->word, arr[i]->count);
 	}
 	free(arr);
+}
+
+void WordTable_destroy(WordTable *table)
+{
+	for (int i = 0; i < table->numbuckets; i++) {
+		if (table->buckets[i]) {
+			WordTable_freebucket(table->buckets[i]);
+		}
+	}
+	free(table->buckets);
+	free(table);
+}
+
+void WordTable_freebucket(WordNode *list)
+{
+	free(list->word);
+	if (list->next) {
+		WordTable_freebucket(list->next);
+	}
+	free(list);
 }
 
 int hash(char *word, int num)

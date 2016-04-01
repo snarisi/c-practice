@@ -17,7 +17,8 @@ char *getword(FILE *file)
 
 	while (!isalpha(c)) {
 		if (c == EOF) {
-			return NULL;
+			*p = '\0';
+			return word;
 		}
 		c = tolower(getc(file));
 	}
@@ -28,6 +29,7 @@ char *getword(FILE *file)
 		c = getc(file);
 	}
 	*p = '\0';
+	
 	return word;
 }
 
@@ -43,6 +45,8 @@ int main(int argc, char **argv)
 	char *word, *path;
 	WordTable *wordtable;
 	int limit;
+
+	limit = 0;
 
 	for (int i = 1; i < argc; i++) {
 		if (argv[i][0] == '-') {
@@ -63,15 +67,21 @@ int main(int argc, char **argv)
 	file = fopen(path, "r");
 
 	wordtable = WordTable_create(48);
-	while ((word = getword(file))) {
+	word = getword(file);
+	while (strlen(word) > 0) {
 		WordTable_add(wordtable, word);
+		word = getword(file);
 	}
 
-	if (limit > wordtable->numwords) {
+	free(word);
+	
+	if (limit > wordtable->numwords || !limit) {
 		limit = wordtable->numwords;
 	}
 
 	WordTable_print_sorted(wordtable, limit);
+	WordTable_destroy(wordtable);
+	fclose(file);
 
 	return 0;
 }
