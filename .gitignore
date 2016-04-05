@@ -6,3 +6,5 @@ algorithms/merge_sort/merge_sort
 algorithms/merge_sort/merge_sort.dSYM
 programs/wordcount/wordcount
 programs/wordcount/wordcount.dSYM
+programs/slen/slen
+programs/slen/slen.dSYM
