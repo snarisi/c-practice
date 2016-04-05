@@ -8,3 +8,5 @@ programs/wordcount/wordcount
 programs/wordcount/wordcount.dSYM
 programs/slen/slen
 programs/slen/slen.dSYM
+programs/findhere/findinfile
+programs/findhere/findinfile.dSYM
